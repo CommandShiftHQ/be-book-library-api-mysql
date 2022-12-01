@@ -3,13 +3,13 @@ const ReaderModel = require('./reader');
 const BookModel = require('./book');
 const GenreModel = require('./genre');
 
-const { DB_NAME, DB_USER, DB_PASSWORD, DB_HOST, DB_PORT } = process.env;
+const { PGDATABASE, PGUSER, PGPASSWORD, PGHOST, PGPORT } = process.env;
 
 const setupDatabase = () => {
-  const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, {
-    host: DB_HOST,
-    port: DB_PORT,
-    dialect: 'mysql',
+  const sequelize = new Sequelize(PGDATABASE, PGUSER, PGPASSWORD, {
+    host: PGHOST,
+    port: PGPORT,
+    dialect: 'postgres',
     logging: false,
   });
 

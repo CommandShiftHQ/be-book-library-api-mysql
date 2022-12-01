@@ -5,7 +5,9 @@ const { Book } = require('../src/models');
 const app = require('../src/app');
 
 describe('/books', () => {
-  before(async () => Book.sequelize.sync());
+  afterEach(async () => {
+    await Book.destroy({ where: {} });
+  });
 
   describe('with no records in the database', () => {
     describe('POST /books', () => {

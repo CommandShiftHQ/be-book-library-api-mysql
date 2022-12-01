@@ -1,29 +1,32 @@
-/* eslint-disable no-console */
-const mysql = require('mysql2');
-const path = require('path');
+const { Client } = require('pg')
+const loadEnv = require('./load-env')
+const { duplicateDatabase } = require('../src/utils/postgres-errors')
 
-const args = process.argv.slice(2)[0];
+const envName = process.argv.slice(2)[0]
 
-const envFile = args === 'test' ? '../.env.test' : '../.env';
+const createDatabase = async (databaseName) => {
+  const client = new Client()
+  try {
+    await client.connect()
+  
+    console.log(`Creating ${databaseName} database...`)
+  
+    await client.query(`CREATE DATABASE ${databaseName}`)
+  
+    console.log('Database created!')
+  } catch (err) {
 
-require('dotenv').config({
-  path: path.join(__dirname, envFile),
-});
-
-const { DB_PASSWORD, DB_NAME, DB_USER, DB_HOST, DB_PORT } = process.env;
-
-const connection = mysql.createConnection({
-  host: DB_HOST,
-  user: DB_USER,
-  password: DB_PASSWORD,
-  port: DB_PORT,
-});
-
-connection.query(`CREATE DATABASE IF NOT EXISTS ${DB_NAME}`, (err) => {
-  if (err) {
-    console.log(`Your environment variables might be wrong. Please double check .env file`);
-    console.log('Environment Variables are:', { DB_PASSWORD, DB_NAME, DB_USER, DB_HOST, DB_PORT });
-    console.log(err);
+    switch (err.code) {
+    case duplicateDatabase:
+      console.log('Database already exists!')
+      break
+    default:
+      console.log(err)
+    }
+  } finally {
+    client.end()
   }
-  connection.close();
-});
+}
+
+const databaseName = loadEnv(envName)
+createDatabase(databaseName)

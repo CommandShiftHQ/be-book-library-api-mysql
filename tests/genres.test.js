@@ -5,9 +5,8 @@ const { Genre } = require('../src/models');
 const app = require('../src/app');
 
 describe('/genres', () => {
-  before(async () => {
+  afterEach(async () => {
     await Genre.destroy({ where: {} });
-    Genre.sequelize.sync();
   });
 
   describe('with no records in the database', () => {

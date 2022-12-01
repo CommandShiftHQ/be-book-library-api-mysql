@@ -51,7 +51,7 @@ const createItem = async (res, model, item) => {
   
     res.status(201).json(itemWithoutPassword);
   } catch (error) {
-    const errorMessages = error.errors.map((e) => e.message);
+    const errorMessages = error.errors?.map((e) => e.message);
 
     res.status(400).json({ errors: errorMessages });
   }

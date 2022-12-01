@@ -5,7 +5,9 @@ const { Reader } = require('../src/models');
 const app = require('../src/app');
 
 describe('/readers', () => {
-  before(async () => Reader.sequelize.sync());
+  afterEach(async () => {
+    await Reader.destroy({ where: {} });
+  });
 
   describe('with no records in the database', () => {
     describe('POST /readers', () => {
